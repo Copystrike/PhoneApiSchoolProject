@@ -22,6 +22,6 @@ namespace PhoneApiSchoolProject.View
         public int Memory { get; set; }
 
         [Required(ErrorMessage = "OsId is nodig")]
-        public int OsId { get; set; }
+        public Guid OsId { get; set; }
     }
 }

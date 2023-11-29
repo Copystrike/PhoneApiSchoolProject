@@ -1,0 +1,175 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject.Tests\\PhoneApiSchoolProject.Tests.csproj": {}
+  },
+  "projects": {
+    "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject.Tests\\PhoneApiSchoolProject.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject.Tests\\PhoneApiSchoolProject.Tests.csproj",
+        "projectName": "PhoneApiSchoolProject.Tests",
+        "projectPath": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject.Tests\\PhoneApiSchoolProject.Tests.csproj",
+        "packagesPath": "C:\\Users\\verbr\\.nuget\\packages\\",
+        "outputPath": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject.Tests\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "P:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\verbr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject\\PhoneApiSchoolProject.csproj": {
+                "projectPath": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject\\PhoneApiSchoolProject.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.6.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.13.3, )"
+            },
+            "NUnit.Analyzers": {
+              "target": "Package",
+              "version": "[3.6.1, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[4.2.1, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100-rc.2.23502.2/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject\\PhoneApiSchoolProject.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject\\PhoneApiSchoolProject.csproj",
+        "projectName": "PhoneApiSchoolProject",
+        "projectPath": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject\\PhoneApiSchoolProject.csproj",
+        "packagesPath": "C:\\Users\\verbr\\.nuget\\packages\\",
+        "outputPath": "E:\\projects\\school\\archived\\api-examen\\PhoneApiSchoolProject\\PhoneApiSchoolProject\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "P:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\verbr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100-rc.2.23502.2\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

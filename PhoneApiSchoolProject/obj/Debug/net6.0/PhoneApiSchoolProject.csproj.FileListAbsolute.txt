@@ -32,3 +32,4 @@ E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProje
 E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject\obj\Debug\net6.0\ref\PhoneApiSchoolProject.dll
 E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject\bin\Debug\net6.0\AutoMapper.dll
 E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject\obj\Debug\net6.0\PhoneApiSchoolProject.sourcelink.json

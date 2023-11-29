@@ -62,5 +62,6 @@ namespace PhoneApiSchoolProject.Services
             return PhoneModels.Where(phone => phone.Brand.Contains(search, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
+        
     }
 }

@@ -9,6 +9,11 @@
         public int Memory { get; set; }
         public Guid OsId { get; set; }
 
+
+        public PhoneModel()
+        {
+        }
+
         public PhoneModel(Guid id, string brand, string color, int storage, int memory, Guid osId)
         {
             Id = id;
@@ -19,5 +24,4 @@
             OsId = osId;
         }
     }
-
 }

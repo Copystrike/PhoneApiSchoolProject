@@ -24,12 +24,12 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetAllPhones()
         {
             var phones = _phoneService.GetAllPhones();
-            
+
             if (phones.Count == 0)
             {
                 return NotFound();
             }
-            
+
             return Ok(phones);
         }
 
@@ -54,6 +54,9 @@ namespace PhoneApiSchoolProject.Controllers
             {
                 return NotFound();
             }
+
+            // Bad request
+
 
             return Ok(phones);
         }
@@ -103,12 +106,12 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult SearchPhones(string search)
         {
             var phones = _phoneService.SearchPhones(search);
-            
+
             if (phones.Count == 0)
             {
                 return NotFound();
             }
-            
+
             return Ok(phones);
         }
     }

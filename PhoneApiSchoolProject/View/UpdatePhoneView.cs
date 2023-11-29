@@ -20,6 +20,6 @@ namespace PhoneApiSchoolProject.View
         [Range(1, 100, ErrorMessage = "Geheugen moet tussen 1 en 100 liggen")]
         public int? Memory { get; set; }
 
-        public int? OsId { get; set; }
+        public Guid? OsId { get; set; }
     }
 }
