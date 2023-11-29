@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PhoneApiSchoolProject.Controllers;
@@ -16,31 +17,6 @@ public class PhoneControllerTests
     private List<PhoneModel> _phones;
     private Mock<IPhoneService> _mockPhoneService;
     private IMapper _mapper;
-    
-    private void InitializePhoneList()
-    {
-        _phones = new List<PhoneModel>
-        {
-            // Apple1
-            new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Apple", "GOLD", 8, 256,
-                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")),
-            // Apple2
-            new(Guid.Parse("6a742018-c647-4a82-b216-3a3465788823"), "Apple", "BLACK", 16, 512,
-                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")),
-            // OnePlus1
-            new(Guid.Parse("69c1f411-c766-4911-aae7-a434acbef698"), "OnePlus", "AQUA", 16, 256,
-                Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")),
-            // Nothing1
-            new(Guid.Parse("7c307e4e-5271-4ffb-bf04-10422e6ef539"), "Nothing", "BLACK", 16, 512,
-                Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")),
-            // Windows1
-            new(Guid.Parse("1a0cf907-3880-4d6f-9219-7f7318a2cc3b"), "Windows", "BLACK", 16, 512,
-                Guid.Parse("51c1c30c-b4e6-4fec-8821-c1623b1100ca")),
-            // Linux1
-            new(Guid.Parse("d6478374-c67e-42a4-a319-c46eca5146f7"), "Linux", "BLACK", 16, 512,
-                Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646"))
-        };
-    }
 
     [SetUp]
     public void Setup()
@@ -52,10 +28,30 @@ public class PhoneControllerTests
             cfg.AddProfile<AppProfile>();
         });
 
-
-        InitializePhoneList();
-
         _mockPhoneService = new Mock<IPhoneService>();
+
+        _phones = new List<PhoneModel>
+        {
+            new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Apple", "GOLD", 8, 256,
+                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")),
+
+            new(Guid.Parse("6a742018-c647-4a82-b216-3a3465788823"), "Apple", "BLACK", 16, 512,
+                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")),
+
+            new(Guid.Parse("69c1f411-c766-4911-aae7-a434acbef698"), "OnePlus", "AQUA", 16, 256,
+                Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")),
+
+            new(Guid.Parse("7c307e4e-5271-4ffb-bf04-10422e6ef539"), "Nothing", "BLACK", 16, 512,
+                Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")),
+
+            new(Guid.Parse("1a0cf907-3880-4d6f-9219-7f7318a2cc3b"), "Windows", "BLACK", 16, 512,
+                Guid.Parse("51c1c30c-b4e6-4fec-8821-c1623b1100ca")),
+
+            new(Guid.Parse("d6478374-c67e-42a4-a319-c46eca5146f7"), "Linux", "BLACK", 16, 512,
+                Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646"))
+        };
+        
+        _mockPhoneService.Setup(service => service.GetAllPhones()).Returns(_phones);
 
         _mapper = configuration.CreateMapper();
     }
@@ -63,14 +59,8 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_GetPhones_ReturnsListOfPhones()
     {
-        
-        // Reset
-        InitializePhoneList();
-        
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
-        mockPhoneService.Setup(service => service.GetAllPhones()).Returns(_phones);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.GetAllPhones() as OkObjectResult;
@@ -83,13 +73,8 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_GetPhoneById_ReturnsPhone()
     {
-        
-        // Reset
-        InitializePhoneList();
-        
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.GetPhoneById(It.IsAny<Guid>())).Returns(new PhoneModel(
+        _mockPhoneService.Setup(service => service.GetPhoneById(It.IsAny<Guid>())).Returns(new PhoneModel(
             Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"),
             "Apple",
             "GOLD",
@@ -98,7 +83,7 @@ public class PhoneControllerTests
             Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
         ));
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.GetPhoneById(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")) as OkObjectResult;
@@ -111,14 +96,9 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_GetPhoneById_ReturnsNotFound()
     {
-        // Reset
-        InitializePhoneList();
-        
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.GetPhoneById(It.IsAny<Guid>())).Returns((PhoneModel)null);
-
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        _mockPhoneService.Setup(service => service.GetPhoneById(It.IsAny<Guid>())).Returns((PhoneModel)null);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.GetPhoneById(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")) as NotFoundResult;
@@ -131,18 +111,20 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_GetPhonesByBrand_ReturnsListOfPhones()
     {
-        // Reset
-        InitializePhoneList();
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
+        
+        _mockPhoneService.Setup(service => service.GetPhonesByBrand(It.IsAny<string>())).Returns(new List<PhoneModel>
+        {
+            new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Apple", "GOLD", 8, 256,
+                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")),
 
-        // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.GetPhonesByBrand(It.IsAny<string>())).Returns(_phones);
-
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+            new(Guid.Parse("6a742018-c647-4a82-b216-3a3465788823"), "Apple", "BLACK", 16, 512,
+                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e"))
+        });
 
         // Act
         var result = controller.GetPhonesByBrand("Apple") as OkObjectResult;
-
+            
         // Assert
         Assert.IsNotNull(result);
         Assert.IsInstanceOf<List<PhoneModel>>(result.Value);
@@ -151,14 +133,11 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_GetPhonesByBrand_ReturnsNotFound()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.GetPhonesByBrand(It.IsAny<string>())).Returns((List<PhoneModel>)null);
+        _mockPhoneService.Setup(service => service.GetPhonesByBrand(It.IsAny<string>()))
+            .Returns(new List<PhoneModel>());
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.GetPhonesByBrand("Apple") as NotFoundResult;
@@ -171,12 +150,8 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_CreatePhone_ReturnsPhone()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.CreatePhone(It.IsAny<PhoneModel>())).Returns(new PhoneModel
+        _mockPhoneService.Setup(service => service.CreatePhone(It.IsAny<PhoneModel>())).Returns(new PhoneModel
         (
             Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"),
             "Apple",
@@ -186,7 +161,7 @@ public class PhoneControllerTests
             Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
         ));
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.CreatePhone(new CreatePhoneView()
@@ -205,12 +180,18 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_UpdatePhone_ReturnsPhone()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.UpdatePhone(It.IsAny<PhoneModel>())).Returns(new PhoneModel
+        _mockPhoneService.Setup(service => service.UpdatePhone(It.IsAny<PhoneModel>())).Returns(new PhoneModel
+        (
+            Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"),
+            "Apple",
+            "GOLD",
+            8,
+            256,
+            Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
+        ));
+        
+        _mockPhoneService.Setup(service => service.GetPhoneById(It.IsAny<Guid>())).Returns(new PhoneModel
         (
             Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"),
             "Apple",
@@ -220,7 +201,7 @@ public class PhoneControllerTests
             Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
         ));
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.UpdatePhone(new UpdatePhoneView()
@@ -238,14 +219,10 @@ public class PhoneControllerTests
     }
 
     [Test]
-    public void PhoneController_UpdatePhone_ReturnsBadRequest()
+    public void PhoneController_UpdatePhone_ReturnsNotFound()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.UpdatePhone(It.IsAny<PhoneModel>())).Returns(new PhoneModel
+        _mockPhoneService.Setup(service => service.UpdatePhone(It.IsAny<PhoneModel>())).Returns(new PhoneModel
         (
             Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"),
             "Apple",
@@ -255,7 +232,7 @@ public class PhoneControllerTests
             Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
         ));
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.UpdatePhone(new UpdatePhoneView()
@@ -266,49 +243,47 @@ public class PhoneControllerTests
             Memory = 8,
             Storage = 256,
             OsId = Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
-        }) as BadRequestResult;
-        // Assert
+        }) as NotFoundResult;
+        
+        // Assert;
         Assert.IsNotNull(result);
-        Assert.IsInstanceOf<BadRequestResult>(result);
+        Assert.IsInstanceOf<NotFoundResult>(result);
     }
 
     [Test]
     public void PhoneController_DeletePhone_ReturnsOk()
     {
-        // Reset
-        InitializePhoneList();
-
-        // Reset
-        _mockPhoneService.Reset();
-
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.DeletePhone(It.IsAny<Guid>()));
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        _mockPhoneService.Setup(service => service.GetPhoneById(It.IsAny<Guid>())).Returns(new PhoneModel
+        (
+            Guid.Parse("6a742018-c647-4a82-b216-3a3465788823"),
+            "Apple",
+            "BLACK",
+            16,
+            512,
+            Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")
+        ));
+
+        _mockPhoneService.Setup(service => service.DeletePhone(It.IsAny<Guid>())).Returns(true);
 
         // Act
-        var result = controller.DeletePhone(
-            Guid.Parse("69c1f411-c766-4911-aae7-a434acbef698")
-        ) as OkResult;
-        
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
+
+        var result = controller.DeletePhone(Guid.Parse("6a742018-c647-4a82-b216-3a3465788823"));
+
         // Assert
-        Assert.IsNotNull(result);
-        Assert.IsInstanceOf<OkResult>(result);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result, Is.TypeOf<OkResult>());
     }
 
     [Test]
     public void PhoneController_DeletePhone_ReturnsNotFound()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.DeletePhone(It.IsAny<Guid>()));
+        _mockPhoneService.Setup(service => service.DeletePhone(It.IsAny<Guid>()));
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.DeletePhone(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")) as NotFoundResult;
@@ -320,14 +295,18 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_SearchPhones_ReturnsListOfPhones()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.SearchPhones(It.IsAny<string>())).Returns(_phones);
+        
+        _mockPhoneService.Setup(service => service.SearchPhones(It.IsAny<string>())).Returns(new List<PhoneModel>
+        {
+            new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Apple", "GOLD", 8, 256,
+                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e")),
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+            new(Guid.Parse("6a742018-c647-4a82-b216-3a3465788823"), "Apple", "BLACK", 16, 512,
+                Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e"))
+        });
+        
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.SearchPhones("Apple") as OkObjectResult;
@@ -340,14 +319,10 @@ public class PhoneControllerTests
     [Test]
     public void PhoneController_SearchPhones_ReturnsNotFound()
     {
-        // Reset
-        InitializePhoneList();
-
         // Arrange
-        var mockPhoneService = new Mock<IPhoneService>();
-        mockPhoneService.Setup(service => service.SearchPhones(It.IsAny<string>())).Returns((List<PhoneModel>)null);
+        _mockPhoneService.Setup(service => service.SearchPhones(It.IsAny<string>())).Returns(new List<PhoneModel>());
 
-        var controller = new PhoneController(mockPhoneService.Object, _mapper);
+        var controller = new PhoneController(_mockPhoneService.Object, _mapper);
 
         // Act
         var result = controller.SearchPhones("Apple") as NotFoundResult;

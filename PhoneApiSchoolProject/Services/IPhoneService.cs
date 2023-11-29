@@ -9,7 +9,7 @@ namespace PhoneApiSchoolProject.Services
         List<PhoneModel> GetPhonesByBrand(string brand);
         PhoneModel CreatePhone(PhoneModel phoneModel);
         PhoneModel UpdatePhone(PhoneModel phoneView);
-        void DeletePhone(Guid id);
+        bool DeletePhone(Guid id);
         List<PhoneModel> SearchPhones(string search);
     }
 }

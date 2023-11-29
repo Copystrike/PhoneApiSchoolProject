@@ -70,6 +70,7 @@ namespace PhoneApiSchoolProject.Controllers
         }
 
         [HttpPut]
+        // Return bad request if the phone is not found
         public IActionResult UpdatePhone([FromBody] UpdatePhoneView phoneView)
         {
             var newPhone = _mapper.Map<PhoneModel>(phoneView);
@@ -98,7 +99,14 @@ namespace PhoneApiSchoolProject.Controllers
                 return NotFound();
             }
 
-            _phoneService.DeletePhone(id);
+            var isDeleted = _phoneService.DeletePhone(id); 
+            
+            if (!isDeleted)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            
+            
             return Ok();
         }
 
