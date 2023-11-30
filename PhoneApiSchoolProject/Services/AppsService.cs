@@ -51,7 +51,7 @@ namespace PhoneApiSchoolProject.Services
             return Apps.Where(app => app.Price > 0).ToList();
         }
 
-        public AppsModel AddApp(AppsModel app)
+        public AppsModel CreateApp(AppsModel app)
         {
             Apps.Add(app);
             return app;

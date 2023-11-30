@@ -8,7 +8,7 @@ namespace PhoneApiSchoolProject.Services
         OsModel? GetOsById(Guid id);
         List<OsModel> GetByOpenSource(bool isOpenSource);
         OsModel CreateOs(OsModel os);
-        OsModel UpdateOs(OsModel os);
+        OsModel? UpdateOs(OsModel osModel);
         void DeleteOs(Guid id);
         List<OsModel> SearchOs(string search);
     }

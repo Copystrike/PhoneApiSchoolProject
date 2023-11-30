@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PhoneApiSchoolProject.Models;
 using PhoneApiSchoolProject.Services;
@@ -49,15 +48,6 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetPhonesByBrand(string brand)
         {
             var phones = _phoneService.GetPhonesByBrand(brand);
-
-            if (phones.Count == 0)
-            {
-                return NotFound();
-            }
-
-            // Bad request
-
-
             return Ok(phones);
         }
 
@@ -74,17 +64,12 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult UpdatePhone([FromBody] UpdatePhoneView phoneView)
         {
             var newPhone = _mapper.Map<PhoneModel>(phoneView);
-
-            var existingPhone = _phoneService.GetPhoneById(newPhone.Id);
-
-            if (existingPhone == null)
+            var updatedPhone = _phoneService.UpdatePhone(newPhone);
+            
+            if (updatedPhone == null)
             {
-                return NotFound();
+                return BadRequest();
             }
-
-            _mapper.Map(phoneView, existingPhone);
-
-            var updatedPhone = _phoneService.UpdatePhone(existingPhone);
 
             return Ok(updatedPhone);
         }
@@ -92,21 +77,7 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletePhone(Guid id)
         {
-            var existingPhone = _phoneService.GetPhoneById(id);
-
-            if (existingPhone == null)
-            {
-                return NotFound();
-            }
-
-            var isDeleted = _phoneService.DeletePhone(id); 
-            
-            if (!isDeleted)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            
-            
+            _phoneService.GetPhoneById(id);
             return Ok();
         }
 
@@ -114,12 +85,6 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult SearchPhones(string search)
         {
             var phones = _phoneService.SearchPhones(search);
-
-            if (phones.Count == 0)
-            {
-                return NotFound();
-            }
-
             return Ok(phones);
         }
     }

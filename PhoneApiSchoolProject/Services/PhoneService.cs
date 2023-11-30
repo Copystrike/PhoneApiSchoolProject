@@ -35,8 +35,6 @@ namespace PhoneApiSchoolProject.Services
 
         public List<PhoneModel> GetPhonesByBrand(string brand)
         {
-            // Will always return a list, even if it's empty
-
             return PhoneModels.Where(phone => phone.Brand.ToLower().Equals(brand.ToLower())).ToList();
         }
 
@@ -46,22 +44,16 @@ namespace PhoneApiSchoolProject.Services
             return phoneModel;
         }
 
-        public PhoneModel UpdatePhone(PhoneModel phoneView)
+        public PhoneModel? UpdatePhone(PhoneModel phoneView)
         {
             var index = PhoneModels.FindIndex(existingPhone => existingPhone.Id == phoneView.Id);
             PhoneModels[index] = phoneView;
             return phoneView;
         }
 
-        public bool DeletePhone(Guid id)
+        public void DeletePhone(Guid id)
         {
-            var index = PhoneModels.FindIndex(existingPhone => existingPhone.Id == id);
-            if (index == -1)
-            {
-                return false;
-            }
-            PhoneModels.RemoveAt(index);
-            return true;
+            PhoneModels.RemoveAll(existingPhone => existingPhone.Id == id);
         }
 
         public List<PhoneModel> SearchPhones(string search)

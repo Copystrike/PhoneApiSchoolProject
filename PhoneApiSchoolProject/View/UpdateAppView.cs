@@ -25,4 +25,7 @@ public class UpdateAppView
 
     [DataType(DataType.Date, ErrorMessage = "Voer een geldige releasedatum in")]
     public DateTime? ReleaseDate { get; set; }
+    
+    [Required(ErrorMessage = "Vul het besturingssysteem in")]
+    public Guid? CompatibleOsId { get; set; }
 }

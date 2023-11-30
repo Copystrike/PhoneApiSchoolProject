@@ -24,12 +24,12 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetAllOs()
         {
             var osList = _oSService.GetAllOs();
-            
+
             if (osList.Count == 0)
             {
                 return NotFound();
             }
-            
+
             return Ok(osList);
         }
 
@@ -70,18 +70,13 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpPut]
         public IActionResult UpdateOs([FromBody] UpdateOsView osView)
         {
-            var newOs = _mapper.Map<OsModel>(osView);
+            var newOs = _mapper.Map(osView, new OsModel());
+            var updatedOs = _oSService.UpdateOs(newOs);
 
-            var existingOs = _oSService.GetOsById(newOs.Id);
-
-            if (existingOs == null)
+            if (updatedOs == null)
             {
                 return NotFound();
             }
-
-            _mapper.Map(osView, existingOs);
-
-            var updatedOs = _oSService.UpdateOs(existingOs);
 
             return Ok(updatedOs);
         }
@@ -89,13 +84,6 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteOs(Guid id)
         {
-            var existingOs = _oSService.GetOsById(id);
-
-            if (existingOs == null)
-            {
-                return NotFound();
-            }
-
             _oSService.DeleteOs(id);
             return Ok();
         }
@@ -104,12 +92,6 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult SearchOs(string search)
         {
             var os = _oSService.SearchOs(search);
-
-            if (os.Count == 0)
-            {
-                return NotFound();
-            }
-
             return Ok(os);
         }
     }

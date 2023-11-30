@@ -37,11 +37,17 @@ namespace PhoneApiSchoolProject.Services
             return os;
         }
 
-        public OsModel UpdateOs(OsModel os)
+        public OsModel? UpdateOs(OsModel osModel)
         {
-            var index = OsModels.FindIndex(existingOs => existingOs.Id == os.Id);
-            OsModels[index] = os;
-            return os;
+            var index = OsModels.FindIndex(os => os.Id == osModel.Id);
+
+            if (index < 0)
+            {
+                return null;
+            }
+
+            OsModels[index] = osModel;
+            return OsModels[index];
         }
 
         public void DeleteOs(Guid id)

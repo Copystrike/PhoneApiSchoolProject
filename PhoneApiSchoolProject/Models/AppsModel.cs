@@ -11,6 +11,11 @@
         public DateTime ReleaseDate { get; set; }
         public Guid CompatibleOsId { get; set; }
 
+
+        public AppsModel()
+        {
+        }
+
         public AppsModel(Guid id, string name, string version, string developer, string description, decimal price,
             DateTime releaseDate, Guid compatibleOs)
         {
@@ -22,19 +27,6 @@
             Price = price;
             ReleaseDate = releaseDate;
             CompatibleOsId = compatibleOs;
-        }
-
-        public AppsModel(string name, string version, string developer, string description, decimal price,
-            DateTime releaseDate, Guid compatibleOsId)
-        {
-            Id = Guid.NewGuid();
-            Name = name;
-            Version = version;
-            Developer = developer;
-            Description = description;
-            Price = price;
-            ReleaseDate = releaseDate;
-            CompatibleOsId = compatibleOsId;
         }
     }
 }

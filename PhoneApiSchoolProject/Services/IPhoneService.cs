@@ -8,8 +8,8 @@ namespace PhoneApiSchoolProject.Services
         PhoneModel? GetPhoneById(Guid id);
         List<PhoneModel> GetPhonesByBrand(string brand);
         PhoneModel CreatePhone(PhoneModel phoneModel);
-        PhoneModel UpdatePhone(PhoneModel phoneView);
-        bool DeletePhone(Guid id);
+        PhoneModel? UpdatePhone(PhoneModel phoneView);
+        void DeletePhone(Guid id);
         List<PhoneModel> SearchPhones(string search);
     }
 }

@@ -51,20 +51,14 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetAppsByIsPaid(bool isPaid)
         {
             var apps = _appsService.GetAppsByIsPaid(isPaid);
-
-            if (apps.Count == 0)
-            {
-                return NotFound();
-            }
-
             return Ok(apps);
         }
 
         [HttpPost]
-        public IActionResult AddApp([FromBody] CreateAppView appView)
+        public IActionResult CreateApp([FromBody] CreateAppView appView)
         {
             var newApp = _mapper.Map<AppsModel>(appView);
-            var addedApp = _appsService.AddApp(newApp);
+            var addedApp = _appsService.CreateApp(newApp);
             return Ok(addedApp);
         }
 
@@ -90,13 +84,6 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteApp(Guid id)
         {
-            var existingApp = _appsService.GetAppById(id);
-
-            if (existingApp == null)
-            {
-                return NotFound();
-            }
-
             _appsService.DeleteApp(id);
             return Ok();
         }
