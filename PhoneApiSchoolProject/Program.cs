@@ -10,9 +10,20 @@ builder.Services.AddDbContext<PhoneContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
-builder.Services.AddScoped<IOsService, DbOsService>();
-builder.Services.AddScoped<IPhoneService, DbPhoneService>();
-builder.Services.AddScoped<IAppsService, DbAppsService>();
+const bool useDatabase = true;
+
+if (useDatabase)
+{
+    builder.Services.AddScoped<IOsService, DbOsService>();
+    builder.Services.AddScoped<IPhoneService, DbPhoneService>();
+    builder.Services.AddScoped<IAppsService, DbAppsService>();
+}
+else
+{
+    builder.Services.AddScoped<IOsService, InMemoryOsService>();
+    builder.Services.AddScoped<IPhoneService, InMemoryPhoneService>();
+    builder.Services.AddScoped<IAppsService, InMemoryAppsService>();
+}
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
