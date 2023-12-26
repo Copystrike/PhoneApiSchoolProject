@@ -14,57 +14,44 @@ namespace PhoneApiSchoolProject.Tests.controllers;
 public class OsControllerTests
 {
     private List<OsModel> _osModels;
+    private OsModel _osModel;
     private Mock<IOsService> _mock;
-    private IMapper _mapper;
-
-    // void Setup();
-    // void PhoneController_GetPhones_ReturnsListOfPhones();
-    // void PhoneController_GetPhoneById_ReturnsPhone();
-    // void PhoneController_GetPhoneById_ReturnsNotFound();
-    // void PhoneController_GetPhonesByBrand_ReturnsListOfPhones();
-    // void PhoneController_GetPhonesByBrand_ReturnsNotFound();
-    // void PhoneController_CreatePhone_ReturnsPhone();
-    // void PhoneController_UpdatePhone_ReturnsPhone();
-    // void PhoneController_UpdatePhone_ReturnsNotFound();
-    // void PhoneController_DeletePhone_ReturnsOk();
-    // void PhoneController_SearchPhones_ReturnsListOfPhones();
-    // void PhoneController_SearchPhones_ReturnsNotFound();
-    // void TearDown();
+    private OsController _controller;
 
     [SetUp]
     public void Setup()
     {
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile<OsProfile>());
-
         _mock = new Mock<IOsService>();
 
-        _osModels = new List<OsModel>()
-        {
+        _osModels =
+        [
             new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Android", "v11", "Google",
                 new DateTime(2008, 9, 23), true),
+
             new(Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e"), "iOS", "v14", "Apple", new DateTime(2007, 6, 29),
                 false),
+
             new(Guid.Parse("51c1c30c-b4e6-4fec-8821-c1623b1100ca"), "Windows", "v10", "Microsoft",
                 new DateTime(2000, 1, 1), false),
-            new(Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646"), "Linux", "v5.10", "Linux Foundation",
-                new DateTime(1991, 8, 25), true),
-        };
-        
-        _mock.Setup(service => service.GetAllOs()).Returns(_osModels);
 
-        _mapper = configuration.CreateMapper();
+            new(Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646"), "Linux", "v5.10", "Linux Foundation",
+                new DateTime(1991, 8, 25), true)
+        ];
+        
+        _osModel = _osModels[0];
+
+        _mock.Setup(service => service.GetAllOs()).Returns(_osModels);
+        
+        _controller = new OsController(_mock.Object);
     }
 
     [Test]
     public void OsController_GetOs_ReturnsListOfOs()
     {
-        // Arrange
-        var controller = new OsController(_mock.Object, _mapper);
+        
+        var result = _controller.GetAllOs();
 
-        // Act
-        var result = controller.GetAllOs();
-
-        // Assert
+        
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -72,15 +59,10 @@ public class OsControllerTests
     [Test]
     public void OsController_GetOsById_ReturnsOs()
     {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.GetOsById(osModel.Id)).Returns(osModel);
-        var controller = new OsController(_mock.Object, _mapper);
-
-        // Act
-        var result = controller.GetOsById(osModel.Id);
-
-        // Assert
+        _mock.Setup(service => service.GetOsById(It.IsAny<Guid>())).Returns(_osModel);
+        
+        var result = _controller.GetOsById(_osModel.Id);
+        
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -88,15 +70,10 @@ public class OsControllerTests
     [Test]
     public void OsController_GetOsById_ReturnsNotFound()
     {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.GetOsById(osModel.Id)).Returns(osModel);
-        var controller = new OsController(_mock.Object, _mapper);
+        _mock.Setup(service => service.GetOsById(It.IsAny<Guid>())).Returns((OsModel) null);
+        
+        var result = _controller.GetOsById(Guid.NewGuid());
 
-        // Act
-        var result = controller.GetOsById(Guid.NewGuid());
-
-        // Assert
         Assert.That(result, Is.TypeOf<NotFoundResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -104,22 +81,18 @@ public class OsControllerTests
     [Test]
     public void OsController_CreateOs_ReturnsOs()
     {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.CreateOs(osModel)).Returns(osModel);
-        var controller = new OsController(_mock.Object, _mapper);
-
-        // Act
-        var result = controller.CreateOs(new CreateOsView()
+        _mock.Setup(service => service.CreateOs(It.IsAny<CreateOsView>())).Returns(_osModel);
+        
+        var result = _controller.CreateOs(new CreateOsView()
         {
-            Name = osModel.Name,
-            Version = osModel.Version,
-            Manufacturer = osModel.Manufacturer,
-            ReleaseDate = osModel.ReleaseDate,
-            IsOpenSource = osModel.IsOpenSource
+            Name = _osModel.Name,
+            Version = _osModel.Version,
+            Manufacturer = _osModel.Manufacturer,
+            ReleaseDate = _osModel.ReleaseDate,
+            IsOpenSource = _osModel.IsOpenSource
         });
 
-        // Assert
+        
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -127,59 +100,25 @@ public class OsControllerTests
     [Test]
     public void OsController_UpdateOs_ReturnsOs()
     {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.UpdateOs(It.IsAny<OsModel>())).Returns(osModel);
-        var controller = new OsController(_mock.Object, _mapper);
+        _mock.Setup(service => service.UpdateOs(It.IsAny<UpdateOsView>())).Returns(_osModel);
         
-        // Act
-        var result = controller.UpdateOs(new UpdateOsView()
+        var result = _controller.UpdateOs(new UpdateOsView()
         {
-            Id = osModel.Id,
-            Name = osModel.Name
+            Id = _osModel.Id,
+            Name = _osModel.Name
         });
-
-        // Assert
+        
         Assert.That(result, Is.TypeOf<OkObjectResult>());
-        Assert.That(result, Is.Not.Null);
-    }
-
-    [Test]
-    public void OsController_UpdateOs_ReturnsNotFound()
-    {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.UpdateOs(osModel));
-        var controller = new OsController(_mock.Object, _mapper);
-
-        // Act
-        var result = controller.UpdateOs(new UpdateOsView()
-        {
-            Id = Guid.NewGuid(),
-            Name = osModel.Name,
-            Version = osModel.Version,
-            Manufacturer = osModel.Manufacturer,
-            ReleaseDate = osModel.ReleaseDate,
-            IsOpenSource = osModel.IsOpenSource
-        });
-
-        // Assert
-        Assert.That(result, Is.TypeOf<NotFoundResult>());
         Assert.That(result, Is.Not.Null);
     }
 
     [Test]
     public void OsController_DeleteOs_ReturnsOk()
     {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.DeleteOs(osModel.Id));
-        var controller = new OsController(_mock.Object, _mapper);
-
-        // Act
-        var result = controller.DeleteOs(osModel.Id);
-
-        // Assert
+        _mock.Setup(service => service.DeleteOs(It.IsAny<Guid>()));
+        
+        var result = _controller.DeleteOs(_osModel.Id);
+        
         Assert.That(result, Is.TypeOf<OkResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -187,15 +126,10 @@ public class OsControllerTests
     [Test]
     public void OsController_SearchOs_ReturnsListOfOs()
     {
-        // Arrange
-        var osModel = _osModels[0];
-        _mock.Setup(service => service.SearchOs(osModel.Name)).Returns(_osModels);
-        var controller = new OsController(_mock.Object, _mapper);
-
-        // Act
-        var result = controller.SearchOs(osModel.Name);
-
-        // Assert
+        _mock.Setup(service => service.SearchOs(It.IsAny<string>())).Returns(_osModels);
+        
+        var result = _controller.SearchOs(_osModel.Name);
+        
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -204,7 +138,8 @@ public class OsControllerTests
     public void TearDown()
     {
         _osModels = null;
+        _osModel = null;
         _mock = null;
-        _mapper = null;
+        _controller = null;
     }
 }

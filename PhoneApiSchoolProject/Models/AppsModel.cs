@@ -1,4 +1,6 @@
-﻿namespace PhoneApiSchoolProject.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PhoneApiSchoolProject.Models
 {
     public class AppsModel
     {
@@ -10,14 +12,15 @@
         public decimal Price { get; set; }
         public DateTime ReleaseDate { get; set; }
         public Guid CompatibleOsId { get; set; }
-
+        
+        public OsModel CompatibleOs { get; set; }
 
         public AppsModel()
         {
         }
 
         public AppsModel(Guid id, string name, string version, string developer, string description, decimal price,
-            DateTime releaseDate, Guid compatibleOs)
+            DateTime releaseDate, Guid compatibleOsId)
         {
             Id = id;
             Name = name;
@@ -26,7 +29,7 @@
             Description = description;
             Price = price;
             ReleaseDate = releaseDate;
-            CompatibleOsId = compatibleOs;
+            CompatibleOsId = compatibleOsId;
         }
     }
 }

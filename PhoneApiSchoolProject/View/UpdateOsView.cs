@@ -6,7 +6,7 @@ public class UpdateOsView
 {
     [Required(ErrorMessage = "Een id is vereist")]
     public Guid Id { get; set; }
-
+    
     [StringLength(100, ErrorMessage = "De naam is te lang")]
     public string? Name { get; set; }
 

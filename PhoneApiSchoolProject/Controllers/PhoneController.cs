@@ -11,24 +11,17 @@ namespace PhoneApiSchoolProject.Controllers
     public class PhoneController : ControllerBase
     {
         private readonly IPhoneService _phoneService;
-        private readonly IMapper _mapper;
 
-        public PhoneController(IPhoneService phoneService, IMapper mapper)
+        public PhoneController(IPhoneService phoneService)
         {
             this._phoneService = phoneService;
-            this._mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetAllPhones()
         {
             var phones = _phoneService.GetAllPhones();
-
-            if (phones.Count == 0)
-            {
-                return NotFound();
-            }
-
+            
             return Ok(phones);
         }
 
@@ -36,6 +29,7 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetPhoneById(Guid id)
         {
             var phone = _phoneService.GetPhoneById(id);
+            
             if (phone == null)
             {
                 return NotFound();
@@ -54,18 +48,15 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpPost]
         public IActionResult CreatePhone([FromBody] CreatePhoneView phoneView)
         {
-            var newPhone = _mapper.Map<PhoneModel>(phoneView);
-            var addedPhone = _phoneService.CreatePhone(newPhone);
+            var addedPhone = _phoneService.CreatePhone(phoneView);
             return Ok(addedPhone);
         }
 
         [HttpPut]
-        // Return bad request if the phone is not found
         public IActionResult UpdatePhone([FromBody] UpdatePhoneView phoneView)
         {
-            var newPhone = _mapper.Map<PhoneModel>(phoneView);
-            var updatedPhone = _phoneService.UpdatePhone(newPhone);
-            
+            var updatedPhone = _phoneService.UpdatePhone(phoneView);
+
             if (updatedPhone == null)
             {
                 return BadRequest();

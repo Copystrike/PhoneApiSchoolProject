@@ -1,8 +1,6 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PhoneApiSchoolProject.Controllers;
-using PhoneApiSchoolProject.Mapper;
 using PhoneApiSchoolProject.Models;
 using PhoneApiSchoolProject.Services;
 using PhoneApiSchoolProject.View;
@@ -12,20 +10,19 @@ namespace PhoneApiSchoolProject.Tests.controllers;
 [TestFixture]
 public class AppsControllerTests
 {
-
     private List<AppsModel> _appsModels;
-    private Mock<IAppsService> _mock;
-    private IMapper _mapper;
+    private AppsModel _appModel;
+
+    private Mock<IAppsService> _mockService;
+    private AppsController _controller;
 
     [SetUp]
     public void Setup()
     {
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile<AppProfile>());
+        _mockService = new Mock<IAppsService>();
 
-        _mock = new Mock<IAppsService>();
-
-        _appsModels = new List<AppsModel>
-        {
+        _appsModels =
+        [
             new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Slack", "v1.0", "Slack Technologies", "Business",
                 0, new DateTime(2009, 8, 1), Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")),
             new(Guid.Parse("ff1c7f14-eb7b-4826-b385-6b1c1051232e"), "Zoom", "v1.0", "Zoom Video Communications",
@@ -52,23 +49,20 @@ public class AppsControllerTests
                 new DateTime(2013, 9, 17), Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646")),
             new(Guid.Parse("86009346-bdb9-4ee8-a166-9a6b3a399ac4"), "Cyberpunk 2077", "v1.0", "CD Projekt", "Games", 60,
                 new DateTime(2020, 12, 10), Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"))
-        };
+        ];
 
-        _mock.Setup(service => service.GetAllApps()).Returns(_appsModels);
+        _appModel = _appsModels[0];
 
-        _mapper = configuration.CreateMapper();
+        _mockService.Setup(service => service.GetAllApps()).Returns(_appsModels);
+
+        _controller = new AppsController(_mockService.Object);
     }
 
     [Test]
     public void AppsController_GetApps_ReturnsListOfApps()
     {
-        // Arrange
-        var controller = new AppsController(_mock.Object, _mapper);
+        var result = _controller.GetAllApps();
 
-        // Act
-        var result = controller.GetAllApps();
-
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -76,46 +70,21 @@ public class AppsControllerTests
     [Test]
     public void AppsController_GetAppById_ReturnsApp()
     {
-        // Arrange
-        var appModel = _appsModels[0];
-        _mock.Setup(service => service.GetAppById(appModel.Id)).Returns(appModel);
-        var controller = new AppsController(_mock.Object, _mapper);
+        _mockService.Setup(service => service.GetAppById(_appModel.Id)).Returns(_appModel);
 
-        // Act
-        var result = controller.GetAppById(appModel.Id);
+        var result = _controller.GetAppById(_appModel.Id);
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
-        Assert.That(result, Is.Not.Null);
-    }
-
-    [Test]
-    public void AppsController_GetAppById_ReturnsNotFound()
-    {
-        // Arrange
-        var appModel = _appsModels[0];
-        _mock.Setup(service => service.GetAppById(appModel.Id)).Returns(appModel);
-        var controller = new AppsController(_mock.Object, _mapper);
-
-        // Act
-        var result = controller.GetAppById(Guid.NewGuid());
-
-        // Assert
-        Assert.That(result, Is.TypeOf<NotFoundResult>());
         Assert.That(result, Is.Not.Null);
     }
 
     [Test]
     public void AppsController_GetAppsByIsPaid_ReturnsListOfApps()
     {
-        // Arrange
-        var controller = new AppsController(_mock.Object, _mapper);
-        _mock.Setup(service => service.GetAppsByIsPaid(true)).Returns(It.IsAny<List<AppsModel>>());
+        _mockService.Setup(service => service.GetAppsByIsPaid(true)).Returns(It.IsAny<List<AppsModel>>());
 
-        // Act
-        var result = controller.GetAppsByIsPaid(true);
+        var result = _controller.GetAppsByIsPaid(true);
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -123,12 +92,9 @@ public class AppsControllerTests
     [Test]
     public void AppsController_CreateApp_ReturnsApp()
     {
-        // Arrange
-        _mock.Setup(service => service.CreateApp(It.IsAny<AppsModel>())).Returns(It.IsAny<AppsModel>());
-        var controller = new AppsController(_mock.Object, _mapper);
+        _mockService.Setup(service => service.CreateApp(It.IsAny<CreateAppView>())).Returns(It.IsAny<AppsModel>());
 
-        // Act
-        var result = controller.CreateApp(new CreateAppView()
+        var result = _controller.CreateApp(new CreateAppView()
         {
             Name = "X (Formerly Twitter)",
             Developer = "Twitter Inc.",
@@ -139,7 +105,6 @@ public class AppsControllerTests
             Version = "v1.0",
         });
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -147,18 +112,12 @@ public class AppsControllerTests
     [Test]
     public void AppsController_UpdateApp_ReturnsApp()
     {
-        // Arrange
-        var appModel = _appsModels[0];
-        
-        _mock.Setup(service => service.UpdateApp(It.IsAny<AppsModel>())).Returns(appModel);
-        _mock.Setup(service => service.GetAppById(It.IsAny<Guid>())).Returns(appModel);
-        
-        var controller = new AppsController(_mock.Object, _mapper);
-        
-        // Act
-        var result = controller.UpdateApp(new UpdateAppView()
+        _mockService.Setup(service => service.UpdateApp(It.IsAny<UpdateAppView>())).Returns(_appModel);
+        _mockService.Setup(service => service.GetAppById(It.IsAny<Guid>())).Returns(_appModel);
+
+        var result = _controller.UpdateApp(new UpdateAppView()
         {
-            Id = appModel.Id,
+            Id = _appModel.Id,
             Name = "Slack",
             Developer = "Slack Technologies",
             Description = "Business",
@@ -168,7 +127,6 @@ public class AppsControllerTests
             CompatibleOsId = Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47")
         });
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -176,15 +134,10 @@ public class AppsControllerTests
     [Test]
     public void AppsController_DeleteApp_ReturnsOk()
     {
-        // Arrange
-        var appModel = _appsModels[0];
-        _mock.Setup(service => service.DeleteApp(appModel.Id));
-        var controller = new AppsController(_mock.Object, _mapper);
+        _mockService.Setup(service => service.DeleteApp(_appModel.Id));
 
-        // Act
-        var result = controller.DeleteApp(appModel.Id);
+        var result = _controller.DeleteApp(_appModel.Id);
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -192,15 +145,10 @@ public class AppsControllerTests
     [Test]
     public void AppsController_SearchApps_ReturnsListOfApps()
     {
-        // Arrange
-        var appModel = _appsModels[0];
-        _mock.Setup(service => service.SearchApps(appModel.Name)).Returns(_appsModels);
-        var controller = new AppsController(_mock.Object, _mapper);
+        _mockService.Setup(service => service.SearchApps(It.IsAny<string>())).Returns(_appsModels);
 
-        // Act
-        var result = controller.SearchApps(appModel.Name);
+        var result = _controller.SearchApps(_appModel.Name);
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -208,15 +156,10 @@ public class AppsControllerTests
     [Test]
     public void AppsController_GetAppsByOsId_ReturnsListOfApps()
     {
-        // Arrange
-        var appModel = _appsModels[0];
-        _mock.Setup(service => service.GetAppsByOsId(appModel.CompatibleOsId)).Returns(_appsModels);
-        var controller = new AppsController(_mock.Object, _mapper);
+        _mockService.Setup(service => service.GetAppsByOsId(It.IsAny<Guid>())).Returns(_appsModels);
 
-        // Act
-        var result = controller.GetAppsByOsId(appModel.CompatibleOsId);
+        var result = _controller.GetAppsByOsId(_appModel.CompatibleOsId);
 
-        // Assert
         Assert.That(result, Is.TypeOf<OkObjectResult>());
         Assert.That(result, Is.Not.Null);
     }
@@ -225,7 +168,8 @@ public class AppsControllerTests
     public void TearDown()
     {
         _appsModels = null;
-        _mock = null;
-        _mapper = null;
+        _appModel = null;
+        _mockService = null;
+        _controller = null;
     }
 }

@@ -1,9 +1,13 @@
-﻿using PhoneApiSchoolProject.Models;
+﻿using AutoMapper;
+using PhoneApiSchoolProject.Models;
+using PhoneApiSchoolProject.View;
 
 namespace PhoneApiSchoolProject.Services
 {
-    public class OsService : IOsService
+    public class InMemoryOsService : IOsService
     {
+        private readonly IMapper _mapper;
+
         private static readonly List<OsModel> OsModels = new List<OsModel>
         {
             new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Android", "v11", "Google",
@@ -15,6 +19,11 @@ namespace PhoneApiSchoolProject.Services
             new(Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646"), "Linux", "v5.10", "Linux Foundation",
                 new DateTime(1991, 8, 25), true),
         };
+
+        public InMemoryOsService(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
 
         public List<OsModel> GetAllOs()
         {
@@ -31,34 +40,42 @@ namespace PhoneApiSchoolProject.Services
             return OsModels.Where(os => os.IsOpenSource == isOpenSource).ToList();
         }
 
-        public OsModel CreateOs(OsModel os)
+        public OsModel CreateOs(CreateOsView os)
         {
-            OsModels.Add(os);
-            return os;
+            var osModel = _mapper.Map<OsModel>(os);
+
+            OsModels.Add(osModel);
+            return osModel;
         }
 
-        public OsModel? UpdateOs(OsModel osModel)
+        public OsModel? UpdateOs(UpdateOsView osModel)
         {
-            var index = OsModels.FindIndex(os => os.Id == osModel.Id);
+            var existingOs = OsModels.FirstOrDefault(os => os.Id == osModel.Id);
 
-            if (index < 0)
+            if (existingOs == null)
             {
                 return null;
             }
 
-            OsModels[index] = osModel;
-            return OsModels[index];
+            _mapper.Map(osModel, existingOs);
+            return existingOs;
         }
 
         public void DeleteOs(Guid id)
         {
-            var index = OsModels.FindIndex(existingOs => existingOs.Id == id);
-            OsModels.RemoveAt(index);
+            var existingOs = OsModels.FirstOrDefault(os => os.Id == id);
+
+            if (existingOs != null)
+            {
+                OsModels.Remove(existingOs);
+            }
         }
 
         public List<OsModel> SearchOs(string search)
         {
-            return OsModels.Where(os => os.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+            return OsModels
+                .Where(os => os.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
     }
 }

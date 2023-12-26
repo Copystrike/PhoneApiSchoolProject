@@ -1,12 +1,13 @@
-﻿using PhoneApiSchoolProject.View;
+﻿using AutoMapper;
+using PhoneApiSchoolProject.Models;
+using PhoneApiSchoolProject.View;
 
 namespace PhoneApiSchoolProject.Services
 {
-    using PhoneApiSchoolProject.Models;
-    using System.Collections.Generic;
-
-    public class PhoneService : IPhoneService
+    public class InMemoryPhoneService : IPhoneService
     {
+        private readonly IMapper _mapper;
+
         private static readonly List<PhoneModel> PhoneModels = new List<PhoneModel>
         {
             new(Guid.Parse("cd8fd36a-b3f8-414d-bb7e-b7e2ff28ca47"), "Apple", "GOLD", 8, 256,
@@ -23,6 +24,11 @@ namespace PhoneApiSchoolProject.Services
                 Guid.Parse("41f75c18-c009-4db7-a0d8-95c89a29e646"))
         };
 
+        public InMemoryPhoneService(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
+
         public List<PhoneModel> GetAllPhones()
         {
             return PhoneModels;
@@ -38,17 +44,24 @@ namespace PhoneApiSchoolProject.Services
             return PhoneModels.Where(phone => phone.Brand.ToLower().Equals(brand.ToLower())).ToList();
         }
 
-        public PhoneModel CreatePhone(PhoneModel phoneModel)
+        public PhoneModel CreatePhone(CreatePhoneView createPhoneView)
         {
-            PhoneModels.Add(phoneModel);
-            return phoneModel;
+            var mappedPhoneModel = _mapper.Map<PhoneModel>(createPhoneView);
+            PhoneModels.Add(mappedPhoneModel);
+            return mappedPhoneModel;
         }
 
-        public PhoneModel? UpdatePhone(PhoneModel phoneView)
+        public PhoneModel? UpdatePhone(UpdatePhoneView updatePhoneView)
         {
-            var index = PhoneModels.FindIndex(existingPhone => existingPhone.Id == phoneView.Id);
-            PhoneModels[index] = phoneView;
-            return phoneView;
+            var existingPhone = PhoneModels.FirstOrDefault(existingPhone => existingPhone.Id == updatePhoneView.Id);
+
+            if (existingPhone == null)
+            {
+                return null;
+            }
+
+            _mapper.Map(updatePhoneView, existingPhone);
+            return existingPhone;
         }
 
         public void DeletePhone(Guid id)
@@ -58,8 +71,8 @@ namespace PhoneApiSchoolProject.Services
 
         public List<PhoneModel> SearchPhones(string search)
         {
-            return PhoneModels.Where(phone => phone.Brand.Contains(search, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            return _mapper.Map<List<PhoneModel>>(
+                PhoneModels.Where(phone => phone.Brand.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList());
         }
     }
 }

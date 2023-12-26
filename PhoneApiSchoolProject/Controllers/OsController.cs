@@ -11,32 +11,24 @@ namespace PhoneApiSchoolProject.Controllers
     [ApiController]
     public class OsController : ControllerBase
     {
-        private readonly IOsService _oSService;
-        private readonly IMapper _mapper;
+        private readonly IOsService _osService;
 
-        public OsController(IOsService osService, IMapper mapper)
+        public OsController(IOsService osService)
         {
-            this._oSService = osService;
-            this._mapper = mapper;
+            _osService = osService;
         }
 
         [HttpGet]
         public IActionResult GetAllOs()
         {
-            var osList = _oSService.GetAllOs();
-
-            if (osList.Count == 0)
-            {
-                return NotFound();
-            }
-
+            var osList = _osService.GetAllOs();
             return Ok(osList);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetOsById(Guid id)
         {
-            var os = _oSService.GetOsById(id);
+            var os = _osService.GetOsById(id);
 
             if (os == null)
             {
@@ -49,34 +41,21 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpGet("opensource/{isOpenSource}")]
         public IActionResult GetAllOsOpenSource(bool isOpenSource)
         {
-            var os = _oSService.GetByOpenSource(isOpenSource);
-
-            if (os.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(os);
+            var osList = _osService.GetByOpenSource(isOpenSource);
+            return Ok(osList);
         }
 
         [HttpPost]
         public IActionResult CreateOs([FromBody] CreateOsView osView)
         {
-            var newOs = _mapper.Map<OsModel>(osView);
-            var addedOs = _oSService.CreateOs(newOs);
-            return Ok(addedOs);
+            var osModel = _osService.CreateOs(osView);
+            return Ok(osModel);
         }
 
         [HttpPut]
         public IActionResult UpdateOs([FromBody] UpdateOsView osView)
         {
-            var newOs = _mapper.Map(osView, new OsModel());
-            var updatedOs = _oSService.UpdateOs(newOs);
-
-            if (updatedOs == null)
-            {
-                return NotFound();
-            }
+            var updatedOs = _osService.UpdateOs(osView);
 
             return Ok(updatedOs);
         }
@@ -84,15 +63,15 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteOs(Guid id)
         {
-            _oSService.DeleteOs(id);
+            _osService.DeleteOs(id);
             return Ok();
         }
 
         [HttpGet("search/{search}")]
         public IActionResult SearchOs(string search)
         {
-            var os = _oSService.SearchOs(search);
-            return Ok(os);
+            var osList = _osService.SearchOs(search);
+            return Ok(osList);
         }
     }
 }

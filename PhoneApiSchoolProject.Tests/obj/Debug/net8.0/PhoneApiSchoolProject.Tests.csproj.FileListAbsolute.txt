@@ -114,3 +114,9 @@ E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProje
 E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\obj\Debug\net8.0\PhoneApiSchoolProject.Tests.pdb
 E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\obj\Debug\net8.0\PhoneApiSchoolProject.Tests.genruntimeconfig.cache
 E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\obj\Debug\net8.0\ref\PhoneApiSchoolProject.Tests.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\bin\Debug\net8.0\MySqlConnector.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\bin\Debug\net8.0\nunit.framework.legacy.dll
+E:\projects\school\archived\api-examen\PhoneApiSchoolProject\PhoneApiSchoolProject.Tests\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll

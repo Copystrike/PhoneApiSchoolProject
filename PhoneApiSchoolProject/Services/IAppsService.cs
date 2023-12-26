@@ -8,8 +8,8 @@ namespace PhoneApiSchoolProject.Services
         List<AppsModel> GetAllApps();
         AppsModel? GetAppById(Guid id);
         List<AppsModel> GetAppsByIsPaid(bool isPaid);
-        AppsModel CreateApp(AppsModel app);
-        AppsModel UpdateApp(AppsModel app);
+        AppsModel CreateApp(CreateAppView app);
+        AppsModel? UpdateApp(UpdateAppView app);
         void DeleteApp(Guid id);
         List<AppsModel> SearchApps(string name);
         List<AppsModel> GetAppsByOsId(Guid osId);

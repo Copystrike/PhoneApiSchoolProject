@@ -1,4 +1,5 @@
 ﻿using PhoneApiSchoolProject.Models;
+using PhoneApiSchoolProject.View;
 
 namespace PhoneApiSchoolProject.Services
 {
@@ -7,8 +8,8 @@ namespace PhoneApiSchoolProject.Services
         List<OsModel> GetAllOs();
         OsModel? GetOsById(Guid id);
         List<OsModel> GetByOpenSource(bool isOpenSource);
-        OsModel CreateOs(OsModel os);
-        OsModel? UpdateOs(OsModel osModel);
+        OsModel CreateOs(CreateOsView os);
+        OsModel? UpdateOs(UpdateOsView osModel);
         void DeleteOs(Guid id);
         List<OsModel> SearchOs(string search);
     }

@@ -8,7 +8,11 @@
         public string Manufacturer { get; set; }
         public DateTime ReleaseDate { get; set; }
         public bool IsOpenSource { get; set; }
-
+        
+        // Navigatie properties
+        public List<AppsModel> CompatibleApps { get; set; }
+        public List<PhoneModel> Phones { get; set; }
+        
         public OsModel()
         {
         }

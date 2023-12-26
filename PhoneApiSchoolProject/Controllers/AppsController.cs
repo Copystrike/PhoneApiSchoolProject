@@ -13,24 +13,15 @@ namespace PhoneApiSchoolProject.Controllers
     public class AppsController : ControllerBase
     {
         private readonly IAppsService _appsService;
-        private readonly IMapper _mapper;
-
-        public AppsController(IAppsService appsService, IMapper mapper)
+        public AppsController(IAppsService appsService)
         {
             this._appsService = appsService;
-            this._mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult GetAllApps()
         {
             var apps = _appsService.GetAllApps();
-
-            if (apps.Count == 0)
-            {
-                return NotFound();
-            }
-
             return Ok(apps);
         }
 
@@ -38,12 +29,6 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetAppById(Guid id)
         {
             var app = _appsService.GetAppById(id);
-
-            if (app == null)
-            {
-                return NotFound();
-            }
-
             return Ok(app);
         }
 
@@ -57,27 +42,20 @@ namespace PhoneApiSchoolProject.Controllers
         [HttpPost]
         public IActionResult CreateApp([FromBody] CreateAppView appView)
         {
-            var newApp = _mapper.Map<AppsModel>(appView);
-            var addedApp = _appsService.CreateApp(newApp);
+            var addedApp = _appsService.CreateApp(appView);
             return Ok(addedApp);
         }
 
         [HttpPut]
         public IActionResult UpdateApp([FromBody] UpdateAppView appView)
         {
-            var newApp = _mapper.Map<AppsModel>(appView);
-
-            var existingApp = _appsService.GetAppById(newApp.Id);
-
-            if (existingApp == null)
+            var updatedApp = _appsService.UpdateApp(appView);
+            
+            if (updatedApp == null)
             {
                 return NotFound();
             }
-
-            _mapper.Map(appView, existingApp);
-
-            var updatedApp = _appsService.UpdateApp(existingApp);
-
+            
             return Ok(updatedApp);
         }
 
@@ -92,12 +70,6 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult SearchApps(string name)
         {
             var apps = _appsService.SearchApps(name);
-
-            if (apps.Count == 0)
-            {
-                return NotFound();
-            }
-
             return Ok(apps);
         }
 
@@ -105,12 +77,6 @@ namespace PhoneApiSchoolProject.Controllers
         public IActionResult GetAppsByOsId(Guid osId)
         {
             var apps = _appsService.GetAppsByOsId(osId);
-
-            if (apps.Count == 0)
-            {
-                return NotFound();
-            }
-
             return Ok(apps);
         }
     }

@@ -9,7 +9,9 @@
         public int Memory { get; set; }
         public Guid OsId { get; set; }
 
-
+        // Navigatie properties
+        public OsModel Os { get; set; }
+        
         public PhoneModel()
         {
         }
